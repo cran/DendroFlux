@@ -1,0 +1,62 @@
+#' @title Sap flux density calculation.
+#'
+#' @description This function calculates sap flux density by Granier's original equation (Granier, 1985&1987).
+#' 
+#' @details Fd = a X K^b 
+#' 
+#' where, Fd is sap flux density, a = 0.0119, b = 1.231.
+#' 
+#' K = (dTmax - dT)/ dT.(Granier, 1985&1987) 
+#' 
+#' If sensors are partially in contact with heartwood, dT can be overstimated, resulting in an underestimation of Fd. However, we can correct dT by: 
+#' 
+#' dT_sw = [dT - (phw * dT_max)]/psw
+#' 
+#' Where, dT_sw is dT in sapwood (i.e., adjusted dT), dT is original (cleaned) dT, dT_max is dT under zero-flow conditions (i.e., estimated "baseline"), 
+#' psw is proportion of probe in sapwood (ranging from 0.0 to 1.0), phw is proportion of probe in heartwood (phw = 1 - psw; ranging from 0.0 to 1.0). 
+#' 
+#' And thus, k-values are calculated manually (using user generated code or spreadsheets) by:
+#' 
+#' k = (dTmax - dT_sw) / dT_sw. 
+#' 
+#' See more details in Clearwater et al.(1999).
+#'
+#' @param df dataframe with first column containing date and time in the format \code{yyyy-mm-dd HH:MM:SS} and following columns with data for the same temporal resolution and time period.
+#' @param psw proportion of probe in sapwood (ranging from 0.0 to 1.0), default is 1.
+#' @param a The constants of empirical formulas are influenced by factors such as species and individual size, default is 0.0119.
+#' @param b The constants of empirical formulas are influenced by factors such as species and individual size, default is 1.231.
+#' 
+#' @return A dataframe containing time series and sap flux density series.
+#' 
+#' @references Granier A. (1985). Une nouvelle m´ethode pour la mesure du flux de s`eve brute dans le tronc des arbres. Annales des Sciences Forestières, 42, 193-200.
+#' 
+#' Granier A. (1987). Evaluation of transpiration in a Douglas-fir stand by means of sap flow measurements. Tree Physiology,3(4), 309-320.
+#' 
+#' Clearwater et al.(1999). Potential errors in measurement of nonuniform sap flow using heat dissipation probes. Tree Physiology,19(10), 681-687.
+#' @author Shuo Wen <shuowen@caf.ac.cn>
+#' @examples
+#' ##Load data
+#' data(sapflux)
+#' sapflux_baseline <- dtmaxcalcu(df=sapflux)
+#' sapflux_fd <- sfcalcu(df=sapflux_baseline)
+#' head(sapflux_fd)
+#'
+#' @export
+sfcalcu <- function(df, psw =1,a = 0.0119, b = 1.231){
+  if (psw>1 | psw <=0){
+    stop("The 'psw' is proportion of probe in sapwood (ranging from 0 to 1).")
+  } else {
+    e <- length(colnames(df))
+    c <- colnames(df)
+    df0 <- df[1]
+    for (f in seq(2,e,2)){
+      d <- (df[f] - (1-psw) *df[f+1])/psw
+      K <- (df[f+1] - d)/d
+      K[1][K[1] < 0] <- 0
+      sf <- a * K^b
+      df0 <- cbind(df0,sf)
+    }
+    colnames(df0) <- colnames(df)[c(1,seq(2,e,2))]
+    return(df0)
+  }
+}

@@ -1,0 +1,22 @@
+#' @title sap flux data
+#' 
+#' @description Sap flux dataset from Wushen Banner, Inner Mongolia Autonomous Region, China.
+#' 
+#' @docType data 
+#' @keywords datasets
+#' @name sapflux
+#' @usage sapflux
+#' @format A data frame with 2160 rows and 9 variables. The variables are respectively
+#' \describe{
+#'   \item{Time}{Containing date and time in the format \code{yyyy-mm-dd HH:MM:SS}}
+#'   \item{st1}{Sap flux data of tree 1}
+#'   \item{st2}{Sap flux data of tree 2}
+#'   \item{st3}{Sap flux data of tree 3}
+#'   \item{st4}{Sap flux data of tree 4}
+#'   \item{st5}{Sap flux data of tree 5}
+#'   \item{st6}{Sap flux data of tree 6}
+#'   \item{st7}{Sap flux data of tree 7}
+#'   \item{st8}{Sap flux data of tree 8}
+#' }
+#' @source The data was collected by thermal dissipation probes(STDP30, Beijing Sinton Technology Company, Beijing, China).
+NULL
