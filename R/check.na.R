@@ -22,7 +22,7 @@ check.na <- function(df,resolution){
   gap.time <- c()
   for (a in c(2:n)){
     b <- a - 1
-    c <- df[a,1] - df[b,1]
+    c <- difftime(df[a, 1], df[b, 1], units = "mins")
     if (c != resolution){
       d <- c / resolution -1 
       for (e in c(1:d)){
@@ -31,10 +31,10 @@ check.na <- function(df,resolution){
       }
     }
   }
-  gap.time <- as.POSIXct(gap.time, tz = "UTC")
   matnull <- matrix(NA, nrow = length(gap.time), ncol = length(colnames(df))-1)
   gap.time <- data.frame(cbind(gap.time,matnull))
   colnames(gap.time) <- colnames(df)
+  gap.time[,1] <- as.POSIXct(gap.time[[1]])
   #######Is there any missing data
   chn <- colSums(is.na(df))[-1]
   if (all(chn != 0)){

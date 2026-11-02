@@ -1,3 +1,10 @@
+## DendroFlux 1.0.4
+
+Bug fixes
+
+- Fixed the unit inconsistency in `check.na()` when time intervals are greater than one hour. All time intervals are now converted to a consistent unit (minutes) before comparison.
+- Fixed `readfile()` to correctly handle file names containing multiple dots by extracting the last file extension with `.`.
+
 ## DendroFlux 1.0.3
 
 Bug fixes

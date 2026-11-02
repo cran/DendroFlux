@@ -14,12 +14,12 @@
 #' 
 #' @importFrom readxl read_excel
 #' @importFrom utils read.csv
+#' @importFrom utils tail
 #' @author Shuo Wen <shuowen@caf.ac.cn>
 #' @export
 readfile <- function(file, sheet=NULL, sep=NULL, dec=NULL){
   file_name <- basename(file)
-  file_name_split <- strsplit(file_name, split = '\\.')[[1]]
-  suffix <- file_name_split[2]
+  suffix <- tail(strsplit(file_name, split = '\\.')[[1]], 1)
   
   if (suffix %in% c("xlsx","csv")){ #read xlsx
     if (suffix == "xlsx"){
@@ -28,7 +28,7 @@ readfile <- function(file, sheet=NULL, sep=NULL, dec=NULL){
     } else{ #read csv
       data <- read.csv(file, header=TRUE, sep = ifelse(is.null(sep),',',sep), 
                        dec = ifelse(is.null(dec),'.',dec))
-      data[[1]] <- as.POSIXct(data[[1]],tz = "UTC")
+      data[[1]] <- as.POSIXct(data[[1]])
       return(data)
     }
   } else{
